@@ -4,8 +4,10 @@ use std::path::Path;
 
 pub fn run() {
     if let Ok((vec1, vec2)) = read_input() {
-        let distance = total_distance(vec1, vec2);
-        println!("{:?}", distance)
+        let distance = total_distance(vec1.clone(), vec2.clone());
+        println!("{:?}", distance);
+        let score = similarity_score(vec1, vec2);
+        println!("{:?}", score);
     }
 }
 
@@ -13,6 +15,12 @@ fn total_distance(mut a: Vec<i32>, mut b: Vec<i32>) -> i32 {
     a.sort();
     b.sort();
     return a.iter().zip(b).map(|(a, b)| (a - b).abs()).sum();
+}
+
+fn similarity_score(a: Vec<i32>, b: Vec<i32>) -> i32 {
+    a.iter()
+        .map(|&target| target * b.iter().filter(|&&value| value == target).count() as i32)
+        .sum()
 }
 
 fn read_input() -> io::Result<(Vec<i32>, Vec<i32>)> {
@@ -24,7 +32,6 @@ fn read_input() -> io::Result<(Vec<i32>, Vec<i32>)> {
     let mut vec2 = Vec::new();
 
     for line in reader.lines() {
-        println!("{:?}", line);
         let line = line?;
         let numbers: Vec<i32> = line
             .split_whitespace()
@@ -33,8 +40,6 @@ fn read_input() -> io::Result<(Vec<i32>, Vec<i32>)> {
         if numbers.len() >= 2 {
             vec1.push(numbers[0]);
             vec2.push(numbers[1]);
-        } else {
-            eprintln!("Skipping line: insufficient numbers");
         }
     }
 
