@@ -1,5 +1,6 @@
 mod day1;
 mod day2;
+mod day3;
 
 use std::env;
 
@@ -20,6 +21,7 @@ fn run_selected_day(day: i32) {
     match day {
         1 => day1::run(),
         2 => day2::run(),
+        3 => day3::run(),
         _ => println!("no solution for that day yet!"),
     }
 }
