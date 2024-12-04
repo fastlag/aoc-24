@@ -4,21 +4,19 @@ use std::path::Path;
 
 pub fn run() {
     if let Ok(word_puzzle) = read_input() {
-        println!("matrix={:?}", word_puzzle);
-        println!("\na={:?}", count_xmas(word_puzzle));
+        println!("\na={:?}", count_xmas(&word_puzzle));
+        println!("\nb={:?}", count_x_mas(&word_puzzle));
     }
 }
 
-fn count_xmas(word_puzzle: Vec<Vec<char>>) -> i32 {
+fn count_xmas(word_puzzle: &Vec<Vec<char>>) -> i32 {
     let size_x = word_puzzle.len();
     let size_y = word_puzzle[0].len();
-    println!("size=({:?}, {:?})", size_x, size_y);
     let mut count = 0;
     let mas = vec!['M', 'A', 'S'];
     for i in 0..size_x {
         for j in 0..size_y {
             if word_puzzle[i][j] == 'X' {
-                print!("\n({:?}, {:?})=X: ", i, j);
                 // Check lower right triangle
                 if check_word(&word_puzzle, i + 1, j + 1, i + 3, j + 3, mas.clone()) {
                     count += 1;
@@ -59,6 +57,29 @@ fn count_xmas(word_puzzle: Vec<Vec<char>>) -> i32 {
     return count;
 }
 
+fn count_x_mas(word_puzzle: &Vec<Vec<char>>) -> i32 {
+    let size_x = word_puzzle.len() - 1;
+    let size_y = word_puzzle[0].len() - 1;
+    let mut count = 0;
+    let mas = vec!['M', 'A', 'S'];
+    for i in 1..size_x {
+        for j in 1..size_y {
+            if word_puzzle[i][j] == 'A' {
+                if check_word(&word_puzzle, i - 1, j - 1, i + 1, j + 1, mas.clone())
+                    || check_word(&word_puzzle, i + 1, j + 1, i - 1, j - 1, mas.clone())
+                {
+                    if check_word(&word_puzzle, i - 1, j + 1, i + 1, j - 1, mas.clone())
+                        || check_word(&word_puzzle, i + 1, j - 1, i - 1, j + 1, mas.clone())
+                    {
+                        count += 1;
+                    }
+                }
+            }
+        }
+    }
+    return count;
+}
+
 fn check_word(
     word_puzzle: &Vec<Vec<char>>,
     i: usize,
@@ -68,21 +89,14 @@ fn check_word(
     word: Vec<char>,
 ) -> bool {
     let mut mas = word.into_iter();
-    print!("\n\t({:?}, {:?})->({:?}, {:?})", i, j, x, y);
     if x >= word_puzzle.len() || y >= word_puzzle[0].len() {
-        print!(" => out of bounds!");
         return false;
-    }
-    print!(" = ");
-    for (m, n) in create_range(i, x).zip(create_range(j, y)) {
-        print!("{:?}", word_puzzle[m][n]);
     }
     for (m, n) in create_range(i, x).zip(create_range(j, y)) {
         if word_puzzle[m][n] != mas.next().unwrap() {
             return false;
         }
     }
-    print!(" => match!");
     return true;
 }
 
@@ -92,12 +106,12 @@ fn create_range(start: usize, end: usize) -> Box<dyn Iterator<Item = usize>> {
     } else if start > end {
         Box::new((end..start + 1).rev())
     } else {
-        Box::new(start..end)
+        Box::new(start..end + 1)
     }
 }
 
 fn read_input() -> io::Result<Vec<Vec<char>>> {
-    let filename = Path::new("day_4_small");
+    let filename = Path::new("day_4_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 
@@ -110,4 +124,25 @@ fn read_input() -> io::Result<Vec<Vec<char>>> {
     }
 
     Ok(vec)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_count_xmas() {
+        let word_puzzle = vec![
+            vec!['S', 'W', 'W', 'S', 'W', 'W', 'S'],
+            vec!['W', 'A', 'W', 'A', 'W', 'A', 'W'],
+            vec!['W', 'W', 'M', 'M', 'M', 'W', 'W'],
+            vec!['S', 'A', 'M', 'X', 'M', 'A', 'S'],
+            vec!['W', 'W', 'M', 'M', 'M', 'W', 'W'],
+            vec!['W', 'A', 'W', 'A', 'W', 'A', 'W'],
+            vec!['S', 'W', 'W', 'S', 'W', 'W', 'S'],
+        ];
+        let result = count_xmas(&word_puzzle);
+        let expected = 8;
+        assert_eq!(result, expected);
+    }
 }
