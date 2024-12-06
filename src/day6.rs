@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -11,13 +12,29 @@ pub fn run() {
                 .map(|slice| slice.iter().filter(|&&x| x == 'X').count())
                 .sum::<usize>()
         );
-        //println!("\nb={:?}", count_x_mas(&word_puzzle));
+        println!("\nb={:?}", loop_from_obstacle(&map));
     }
+}
+
+fn loop_from_obstacle(map: &Vec<Vec<char>>) -> i32 {
+    let mut count = 0;
+    for i in 0..map.len() - 1 {
+        for j in 0..map[0].len() - 1 {
+            let mut obstacled_map = map.clone();
+            obstacled_map[i][j] = '#';
+            let res = guard_path(&obstacled_map);
+            if res.len() == 0 {
+                count += 1;
+            }
+        }
+    }
+    return count;
 }
 
 fn guard_path(map: &Vec<Vec<char>>) -> Vec<Vec<char>> {
     let mut map_with_path = map.clone();
     let mut pos = guard_pos(map);
+    let mut turns: HashSet<(usize, usize, usize)> = HashSet::new();
     map_with_path[pos.0][pos.1] = 'X';
     loop {
         if pos.2 == 0 {
@@ -27,7 +44,12 @@ fn guard_path(map: &Vec<Vec<char>>) -> Vec<Vec<char>> {
                     map_with_path[pos.0][pos.1] = 'X';
                     continue;
                 } else {
-                    pos.2 = 1
+                    pos.2 = 1;
+                    if turns.contains(&pos.clone()) {
+                        return Vec::new();
+                    } else {
+                        turns.insert(pos.clone());
+                    }
                 }
             } else {
                 break;
@@ -40,7 +62,12 @@ fn guard_path(map: &Vec<Vec<char>>) -> Vec<Vec<char>> {
                     map_with_path[pos.0][pos.1] = 'X';
                     continue;
                 } else {
-                    pos.2 = 2
+                    pos.2 = 2;
+                    if turns.contains(&pos.clone()) {
+                        return Vec::new();
+                    } else {
+                        turns.insert(pos.clone());
+                    }
                 }
             } else {
                 break;
@@ -53,7 +80,12 @@ fn guard_path(map: &Vec<Vec<char>>) -> Vec<Vec<char>> {
                     map_with_path[pos.0][pos.1] = 'X';
                     continue;
                 } else {
-                    pos.2 = 3
+                    pos.2 = 3;
+                    if turns.contains(&pos.clone()) {
+                        return Vec::new();
+                    } else {
+                        turns.insert(pos.clone());
+                    }
                 }
             } else {
                 break;
@@ -66,7 +98,12 @@ fn guard_path(map: &Vec<Vec<char>>) -> Vec<Vec<char>> {
                     map_with_path[pos.0][pos.1] = 'X';
                     continue;
                 } else {
-                    pos.2 = 0
+                    pos.2 = 0;
+                    if turns.contains(&pos.clone()) {
+                        return Vec::new();
+                    } else {
+                        turns.insert(pos.clone());
+                    }
                 }
             } else {
                 break;
