@@ -4,21 +4,15 @@ use std::path::Path;
 
 pub fn run() {
     if let Ok(map) = read_input() {
-        println!("\na={:?}", count_char(&guard_path(&map), 'X'));
+        println!(
+            "\na={:?}",
+            &guard_path(&map)
+                .iter()
+                .map(|slice| slice.iter().filter(|&&x| x == 'X').count())
+                .sum::<usize>()
+        );
         //println!("\nb={:?}", count_x_mas(&word_puzzle));
     }
-}
-
-fn count_char(map: &Vec<Vec<char>>, character: char) -> i32 {
-    let mut count = 0;
-    for i in 0..map.len() - 1 {
-        for j in 0..map[0].len() - 1 {
-            if map[i][j] == character {
-                count += 1;
-            }
-        }
-    }
-    return count;
 }
 
 fn guard_path(map: &Vec<Vec<char>>) -> Vec<Vec<char>> {
@@ -137,8 +131,10 @@ mod tests {
         for slice in &guard_path {
             println!("{:?}", slice);
         }
-        let result = count_char(&guard_path, 'X');
-        let expected = 41;
-        assert_eq!(result, expected);
+        let result = &guard_path
+            .iter()
+            .map(|slice| slice.iter().filter(|&&x| x == 'X').count())
+            .sum::<usize>();
+        assert_eq!(*result as i32, 41);
     }
 }
