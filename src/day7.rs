@@ -8,16 +8,28 @@ pub fn run() {
             "\na={:?}",
             equations
                 .iter()
-                .filter(|&equation| check_equation(equation))
+                .filter(|&equation| check_equation(equation, &vec![mul, add]))
                 .map(|equation| equation[0])
                 .sum::<i64>()
         );
-        // println!("\nb={:?}", count_x_mas(&word_puzzle));
+        println!(
+            "\nb={:?}",
+            equations
+                .iter()
+                .filter(|&equation| check_equation(equation, &vec![mul, add, concat]))
+                .map(|equation| equation[0])
+                .sum::<i64>()
+        );
     }
 }
 
-fn check_equation(equation: &Vec<i64>) -> bool {
-    return check_dfs(&equation[2..].to_vec(), equation[1], equation[0]);
+fn check_equation(equation: &Vec<i64>, operators: &Vec<fn(i64, i64) -> i64>) -> bool {
+    return check(&equation[2..].to_vec(), operators, equation[1], equation[0]);
+}
+
+fn concat(a: i64, b: i64) -> i64 {
+    let concatenated = format!("{}{}", a, b);
+    concatenated.parse::<i64>().unwrap()
 }
 
 fn mul(a: i64, b: i64) -> i64 {
@@ -28,16 +40,22 @@ fn add(a: i64, b: i64) -> i64 {
     return a + b;
 }
 
-fn check_dfs(remaining: &Vec<i64>, current_value: i64, expected_value: i64) -> bool {
+fn check(
+    remaining: &Vec<i64>,
+    operators: &Vec<fn(i64, i64) -> i64>,
+    current_value: i64,
+    expected_value: i64,
+) -> bool {
     if remaining.len() == 0 {
         return current_value == expected_value;
     }
     if current_value > expected_value {
         return false;
     }
-    for operator in vec![mul, add] {
-        if check_dfs(
+    for operator in operators {
+        if check(
             &remaining[1..].to_vec(),
+            operators,
             operator(current_value, remaining[0]),
             expected_value,
         ) {
@@ -74,7 +92,24 @@ mod tests {
     #[test]
     fn test_transform() {
         let equation = vec![292, 11, 6, 16, 20];
-        let result = check_dfs(&equation[1..].to_vec(), 0, equation[0]);
+        let result = check(
+            &equation[2..].to_vec(),
+            &vec![mul, add, concat],
+            equation[1],
+            equation[0],
+        );
+        assert_eq!(result, true);
+    }
+
+    #[test]
+    fn test_transform_b() {
+        let equation = vec![7290, 6, 8, 6, 15];
+        let result = check(
+            &equation[2..].to_vec(),
+            &vec![mul, add, concat],
+            equation[1],
+            equation[0],
+        );
         assert_eq!(result, true);
     }
 
@@ -93,10 +128,32 @@ mod tests {
         ];
         let result: i64 = equations
             .iter()
-            .filter(|&equation| check_equation(equation))
+            .filter(|&equation| check_equation(equation, &vec![mul, add]))
             .map(|equation| equation[0])
             .sum();
         let expected = 3749;
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_count_valid_equations_b() {
+        let equations = vec![
+            vec![190, 10, 19],
+            vec![3267, 81, 40, 27],
+            vec![83, 17, 5],
+            vec![156, 15, 6],
+            vec![7290, 6, 8, 6, 15],
+            vec![161011, 16, 10, 13],
+            vec![192, 17, 8, 14],
+            vec![21037, 9, 7, 18, 13],
+            vec![292, 11, 6, 16, 20],
+        ];
+        let result: i64 = equations
+            .iter()
+            .filter(|&equation| check_equation(equation, &vec![mul, add, concat]))
+            .map(|equation| equation[0])
+            .sum();
+        let expected = 11387;
         assert_eq!(result, expected);
     }
 }
