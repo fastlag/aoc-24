@@ -19,7 +19,7 @@ pub fn run() {
 }
 
 fn solve_b() -> io::Result<Vec<(i32, i32)>> {
-    let filename = Path::new("day_3_input");
+    let filename = Path::new("data/day_3_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
     let content: String = reader.lines().collect::<Result<_, _>>()?;

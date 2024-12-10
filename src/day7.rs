@@ -66,7 +66,7 @@ fn check(
 }
 
 fn read_input() -> io::Result<Vec<Vec<i64>>> {
-    let filename = Path::new("day_7_input");
+    let filename = Path::new("data/day_7_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 

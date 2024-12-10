@@ -58,7 +58,7 @@ fn report_almost_safe(report: &Vec<i32>) -> bool {
 }
 
 fn read_input() -> io::Result<Vec<Vec<i32>>> {
-    let filename = Path::new("day_2_input");
+    let filename = Path::new("data/day_2_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 

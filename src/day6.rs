@@ -131,7 +131,7 @@ fn guard_pos(map: &Vec<Vec<char>>) -> (usize, usize, usize) {
 }
 
 fn read_input() -> io::Result<Vec<Vec<char>>> {
-    let filename = Path::new("day_6_input");
+    let filename = Path::new("data/day_6_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 

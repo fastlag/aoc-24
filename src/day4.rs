@@ -111,7 +111,7 @@ fn create_range(start: usize, end: usize) -> Box<dyn Iterator<Item = usize>> {
 }
 
 fn read_input() -> io::Result<Vec<Vec<char>>> {
-    let filename = Path::new("day_4_input");
+    let filename = Path::new("data/day_4_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 

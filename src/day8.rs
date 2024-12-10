@@ -164,7 +164,7 @@ fn gcd(a: isize, b: isize) -> isize {
 }
 
 fn read_input() -> io::Result<Vec<Vec<char>>> {
-    let filename = Path::new("day_8_input");
+    let filename = Path::new("data/day_8_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 

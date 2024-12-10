@@ -118,7 +118,7 @@ fn check_rule(rule: &(i32, i32), order: &Vec<i32>) -> bool {
 }
 
 fn read_input() -> io::Result<(Vec<(i32, i32)>, Vec<Vec<i32>>)> {
-    let filename = Path::new("day_5_input");
+    let filename = Path::new("data/day_5_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 

@@ -24,7 +24,7 @@ fn similarity_score(a: Vec<i32>, b: Vec<i32>) -> i32 {
 }
 
 fn read_input() -> io::Result<(Vec<i32>, Vec<i32>)> {
-    let filename = Path::new("day_1_input");
+    let filename = Path::new("data/day_1_input");
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 
