@@ -1,5 +1,6 @@
 mod day1;
 mod day10;
+mod day11;
 mod day2;
 mod day3;
 mod day4;
@@ -36,6 +37,7 @@ fn run_selected_day(day: i32) {
         8 => day8::run(),
         9 => day9::run(),
         10 => day10::run(),
+        11 => day11::run(),
         _ => println!("no solution for that day yet!"),
     }
 }
