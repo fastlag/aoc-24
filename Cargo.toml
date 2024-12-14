@@ -8,3 +8,4 @@ debug = true
 
 [dependencies]
 regex = "1.11.1"
+image = "0.24"
